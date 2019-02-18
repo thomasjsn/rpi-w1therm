@@ -11,6 +11,7 @@ sensors = {
 
 msgs = []
 temps = []
+available = []
 
 
 def add_msg_to_queue(topic, payload):
@@ -22,6 +23,20 @@ def add_msg_to_queue(topic, payload):
   }
 
   msgs.append(msg)
+  print(msg)
+
+
+def set_sensor_status():
+  for uuid, sensor in sensors.items():
+    msg = {
+      'topic': 'sensor/office/temp/{}/status'.format(sensor),
+      'payload': 'online' if sensor in available else 'offline',
+      'qos': 0,
+      'retain': False
+    }
+
+    msgs.append(msg)
+    print(msg)
 
 
 while True:
@@ -29,15 +44,16 @@ while True:
     temp = sensor.get_temperature()
 
     add_msg_to_queue(sensors[sensor.id], temp)
-    print("Sensor {} has temperature {:.2f}".format(sensors[sensor.id], temp))
 
     temps.append(temp)
+    available.append(sensors[sensor.id])
 
   average = sum(temps)/len(temps)
-  print("Average temperature is {:.2f}".format(average))
+
+  set_sensor_status()
   add_msg_to_queue('average', average)
-  
   publish.multiple(msgs, hostname="192.168.1.119", client_id="rack_temp")
 
   temps.clear()
+  available.clear()
   time.sleep(15)
