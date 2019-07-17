@@ -1,5 +1,6 @@
+import paho.mqtt.client as mqtt
+import queue
 import time
-import paho.mqtt.publish as publish
 from w1thermsensor import W1ThermSensor
 
 sensors = {
@@ -9,9 +10,21 @@ sensors = {
     '051702869eff': 'rack_floor'
 }
 
-msgs = []
+msgs = queue.Queue()
 temps = []
 available = []
+
+
+def on_connect(client, userdata, flags, rc):
+    print("Connected with result code " + str(rc))
+
+    #client.subscribe(cfg.mqtt['prefix'] + "/pdu/outlet/+/+")
+
+    if rc==0:
+        client.connected_flag=True
+        client.publish("$CONNECTED/rack-temp", 1, retain=True)
+    else:
+        client.bad_connection_flag=True
 
 
 def add_msg_to_queue(topic, payload):
@@ -22,7 +35,7 @@ def add_msg_to_queue(topic, payload):
     'retain': False
   }
 
-  msgs.append(msg)
+  msgs.put(msg)
   print(msg)
 
 
@@ -35,8 +48,16 @@ def set_sensor_status():
       'retain': False
     }
 
-    msgs.append(msg)
+    msgs.put(msg)
     print(msg)
+
+
+client = mqtt.Client("rack-temp")
+client.on_connect = on_connect
+#client.on_message = on_message
+client.will_set("$CONNECTED/rack-temp", 0, qos=0, retain=True)
+client.connect("mqtt.lan.uctrl.net")
+client.loop_start()
 
 
 while True:
@@ -52,7 +73,9 @@ while True:
 
   set_sensor_status()
   add_msg_to_queue('average', average)
-  publish.multiple(msgs, hostname="192.168.1.119", client_id="rack_temp")
+
+  while not msgs.empty():
+    client.publish(**msgs.get())
 
   temps.clear()
   available.clear()
