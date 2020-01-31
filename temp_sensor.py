@@ -4,10 +4,10 @@ import time
 from w1thermsensor import W1ThermSensor
 
 sensors = {
-    '0517021db9ff': 'rack_ceiling',
-    '0517022f8eff': 'rack_back',
-    '0416a02b0eff': 'rack_front',
-    '051702869eff': 'rack_floor'
+    '0517021db9ff': 'above_rack',
+    #'0517022f8eff': 'rack_back',
+    '0416a02b0eff': 'above_desk',
+    '051702869eff': 'room_center'
 }
 
 msgs = queue.Queue()
@@ -36,7 +36,7 @@ def add_msg_to_queue(topic, payload):
   }
 
   msgs.put(msg)
-  print(msg)
+  #print(msg)
 
 
 def set_sensor_status():
@@ -49,7 +49,7 @@ def set_sensor_status():
     }
 
     msgs.put(msg)
-    print(msg)
+    #print(msg)
 
 
 client = mqtt.Client("rack-temp")
@@ -65,6 +65,7 @@ while True:
     temp = sensor.get_temperature()
 
     add_msg_to_queue(sensors[sensor.id], temp)
+    print("sensor: %s (%s) is %.2f" % (sensor.id, sensors[sensor.id], temp))
 
     temps.append(temp)
     available.append(sensors[sensor.id])
@@ -73,6 +74,7 @@ while True:
 
   set_sensor_status()
   add_msg_to_queue('average', average)
+  print("average from %d sensors is %.2f" % (len(temps), average))
 
   while not msgs.empty():
     client.publish(**msgs.get())
