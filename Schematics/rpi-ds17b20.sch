@@ -1432,6 +1432,7 @@ In this library the device names are the same as the pin names of the symbols, t
 <sheets>
 <sheet>
 <plain>
+<text x="40.64" y="7.62" size="1.778" layer="91">Raspberry Pi with DS18B20 temperature sensors</text>
 </plain>
 <instances>
 <instance part="IC3" gate="A" x="86.36" y="27.94" smashed="yes">
