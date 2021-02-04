@@ -2,18 +2,18 @@
 
 > Raspberry Pi driven temperature sensors for fan control of the home lab/office.
 
-Project documentation available at: https://cavelab.dev/wiki/Raspberry_Pi_with_DS18B20_temperature_sensors
+Project documentation available at: https://blog.cavelab.dev/2019/10/rpi-ds18b20-temp-sensors/
 
-![Raspberry Pi with DS18B20 temperature sensors](https://cavelab.dev/images/thumb/0/0d/Dsc-0837-gzn6pg.jpeg/600px-Dsc-0837-gzn6pg.jpeg)
+![Raspberry Pi with DS18B20 temperature sensors](https://i.logistics.cavelab.net/large/1950.jpeg)
 
 ## Author
 **Thomas Jensen**
 * Twitter: [@thomasjsn](https://twitter.com/thomasjsn)
 * Github: [@thomasjsn](https://github.com/thomasjsn)
-* Website: [cavelab.dev](https://cavelab.dev/wiki/User:Thomas)
+* Website: [cavelab.dev](https://cavelab.dev)
 
 ## License
 The MIT License (MIT). Please see [license file](LICENSE.txt) for more information.
 
 ---
-_This README was automatically generated using the MediaWiki API_ (`pageid:1902`)
+_This README was automatically generated using µLogistics_ (`projectid:203`)
